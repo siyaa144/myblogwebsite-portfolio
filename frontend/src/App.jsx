@@ -1,51 +1,47 @@
-import { useEffect, useState } from 'react'
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import './App.css'
+import { AuthProvider, useAuth } from './AuthContext'
+import NavBar from './NavBar'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import NewPost from './pages/NewPost'
+import Register from './pages/Register'
 
-const API_URL = 'http://127.0.0.1:8000/api/posts/'
+function RequireAuth({ children }) {
+  const { isAuthenticated } = useAuth()
+  return isAuthenticated ? children : <Navigate to="/login" replace />
+}
+
+function AppRoutes() {
+  return (
+    <>
+      <NavBar />
+      <main className="blog">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/new"
+            element={
+              <RequireAuth>
+                <NewPost />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </main>
+    </>
+  )
+}
 
 function App() {
-  const [posts, setPosts] = useState([])
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetch(API_URL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`API returned ${response.status}`)
-        }
-        return response.json()
-      })
-      .then(setPosts)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [])
-
   return (
-    <main className="blog">
-      <h1>My Blog</h1>
-
-      {loading && <p>Loading posts...</p>}
-      {error && (
-        <p className="error">
-          Couldn't reach the API at {API_URL} ({error}). Is the Django
-          server running?
-        </p>
-      )}
-
-      <ul className="post-list">
-        {posts.map((post) => (
-          <li key={post.id} className="post">
-            <h2>{post.title}</h2>
-            <p className="meta">
-              by {post.author} on{' '}
-              {new Date(post.created_date).toLocaleDateString()}
-            </p>
-            <p>{post.text}</p>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <Router>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </Router>
   )
 }
 
