@@ -2,7 +2,7 @@
 
 A Django + React blog, built as a portfolio project on top of the NAIT SDEV2401 blog example. Started as coursework, extended with a REST API and a React frontend to demonstrate full-stack skills for entry-level developer roles.
 
-**Live:** _add the deployed URL here once it's up_
+**Live:** https://myblogwebsite-portfolio.vercel.app (API: https://myblogwebsite-api.onrender.com)
 
 ## Stack
 
@@ -65,6 +65,8 @@ Then wire the two together:
 
 - On Render, update the `CORS_ALLOWED_ORIGINS` environment variable to your Vercel URL (comma-separate if you keep localhost too).
 - Redeploy the backend for the CORS change to take effect.
+
+**Note:** the Render free tier spins the backend down after inactivity, so the first request after a while can take ~50s to wake it back up. Subsequent requests are fast.
 
 ## Next steps
 
