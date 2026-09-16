@@ -1,0 +1,26 @@
+services:
+  - name: myblogwebsite-api
+    type: web
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"
+    startCommand: "python -m gunicorn myblogwebsite.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "http://localhost:5173"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: myblogwebsite-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+databases:
+  - name: myblogwebsite-db
+    plan: free

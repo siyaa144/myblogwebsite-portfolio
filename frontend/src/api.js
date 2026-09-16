@@ -1,4 +1,4 @@
-export const API_BASE = 'http://127.0.0.1:8000/api'
+export const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
 
 export async function apiFetch(path, { method = 'GET', body, token } = {}) {
   const headers = { 'Content-Type': 'application/json' }
